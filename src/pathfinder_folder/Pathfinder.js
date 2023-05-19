@@ -2,6 +2,9 @@ import React,{Component} from 'react';
 import Node from './Node/Node';
 import './Pathfinder.css';
 import {dijkstra, getNodesInShortestPathOrder} from '../algorithms/dijkstra';
+import {dfs} from '../algorithms/dfs';
+import {bfs} from '../algorithms/bfs';
+import {astar} from '../algorithms/Astar';
 
 const TOTAL_ROW = 15;
 const TOTAL_COL = 50;
@@ -44,7 +47,7 @@ export default class Pathfinder extends Component {
       this.setState({nodes});
   }
 
-  async applyDijkstra() {
+  applyDijkstra() {
   
     const {nodes,bombActive} = this.state;
     let intermediateNodesInOrder=[];
@@ -59,7 +62,7 @@ export default class Pathfinder extends Component {
       const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
       const nodesInOrder = dijkstra(nodes, startNode , finishNode);
       const shortestPath = getNodesInShortestPathOrder(finishNode);
-      this.animateDijkstra(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
       nodesInOrderG = nodesInOrder;
       intermediateNodesInOrderG = intermediateNodesInOrder;
       shortestPathG = shortestPath;
@@ -69,7 +72,99 @@ export default class Pathfinder extends Component {
       const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
       const nodesInOrder = dijkstra(nodes, startNode, finishNode);
       const shortestPath = getNodesInShortestPathOrder(finishNode);
-      this.animateDijkstra(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      shortestPathG = shortestPath;
+    }
+  }
+  applyDfs() {
+  
+    const {nodes,bombActive} = this.state;
+    let intermediateNodesInOrder=[];
+    if(bombActive === true){
+      const intermediateStart = nodes[START_NODE_ROW][START_NODE_COL];
+      const intermediateEnd = nodes[BOMB_ROW][BOMB_COL];
+      intermediateNodesInOrder = dfs(nodes, intermediateStart, intermediateEnd);
+      const newGrid = getNewGridWithDistanceInfy(this.state.nodes);
+      this.setState({nodes: newGrid});
+      
+      const startNode = nodes[BOMB_ROW][BOMB_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = dfs(nodes, startNode , finishNode);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      intermediateNodesInOrderG = intermediateNodesInOrder;
+      shortestPathG = shortestPath;
+    }
+    else{
+      const startNode = nodes[START_NODE_ROW][START_NODE_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = dfs(nodes, startNode, finishNode);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      shortestPathG = shortestPath;
+    }
+  }
+  applyBfs() {
+  
+    const {nodes,bombActive} = this.state;
+    let intermediateNodesInOrder=[];
+    if(bombActive === true){
+      const intermediateStart = nodes[START_NODE_ROW][START_NODE_COL];
+      const intermediateEnd = nodes[BOMB_ROW][BOMB_COL];
+      intermediateNodesInOrder = bfs(nodes, intermediateStart, intermediateEnd);
+      const newGrid = getNewGridWithDistanceInfy(this.state.nodes);
+      this.setState({nodes: newGrid});
+      
+      const startNode = nodes[BOMB_ROW][BOMB_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = bfs(nodes, startNode , finishNode);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      intermediateNodesInOrderG = intermediateNodesInOrder;
+      shortestPathG = shortestPath;
+    }
+    else{
+      const startNode = nodes[START_NODE_ROW][START_NODE_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = bfs(nodes, startNode, finishNode);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      shortestPathG = shortestPath;
+    }
+  }
+  
+  applyAstar() {
+  
+    const {nodes,bombActive} = this.state;
+    let intermediateNodesInOrder=[];
+    if(bombActive === true){
+      const intermediateStart = nodes[START_NODE_ROW][START_NODE_COL];
+      const intermediateEnd = nodes[BOMB_ROW][BOMB_COL];
+      intermediateNodesInOrder = astar(nodes, intermediateStart, intermediateEnd);
+      const newGrid = getNewGridWithDistanceInfy(this.state.nodes);
+      this.setState({nodes: newGrid});
+      
+      const startNode = nodes[BOMB_ROW][BOMB_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = astar(nodes, startNode , finishNode);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
+      nodesInOrderG = nodesInOrder;
+      intermediateNodesInOrderG = intermediateNodesInOrder;
+      shortestPathG = shortestPath;
+    }
+    else{
+      const startNode = nodes[START_NODE_ROW][START_NODE_COL];
+      const finishNode = nodes[FINISH_NODE_ROW][FINISH_NODE_COL];
+      const nodesInOrder = astar(nodes, startNode, finishNode);
+      console.log(nodesInOrder);
+      const shortestPath = getNodesInShortestPathOrder(finishNode);
+      this.animate(nodesInOrder, shortestPath,intermediateNodesInOrder);
       nodesInOrderG = nodesInOrder;
       shortestPathG = shortestPath;
     }
@@ -88,20 +183,17 @@ export default class Pathfinder extends Component {
     for (let i = 0; i < n; i++) {
         const node = intermediateNodesInOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-default';
+          'node ';
       }
       for (let i = 0; i <= nodesInOrder.length; i++) {
         const node = nodesInOrder[i];
                 document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-default';
+          'node ';
       }
-      for (let i = 0; i < shortestPath.length; i++) {
-        const node = shortestPath[i];
-        document.getElementById(`node-${node.row}-${node.col}`).style.color("white");
-    }
+      
   } 
 
-  animateDijkstra(nodesInOrder, shortestPath,intermediateNodesInOrder) {
+  animate(nodesInOrder, shortestPath,intermediateNodesInOrder) {
     const{isFast} = this.state;
     let n = intermediateNodesInOrder.length;
     for (let i = 0; i <= n; i++) {
@@ -143,12 +235,12 @@ export default class Pathfinder extends Component {
   // }
 
   animateShortestPath(shortestPath) {
-    const{isFast} = this.state;
+    const{isFast,bombActive} = this.state;
     let k = true;
     for (let i = 0; i < shortestPath.length; i++) {
       setTimeout(() => {
         const node = shortestPath[i];
-        if(node.row === BOMB_ROW && node.col === BOMB_COL) k = false;
+        if(node.row === BOMB_ROW && node.col === BOMB_COL && bombActive===true) k = false;
         if(k===true){
           document.getElementById(`node-${node.row}-${node.col}`).className =
           'node node-shortest-path';
@@ -212,11 +304,25 @@ export default class Pathfinder extends Component {
     const{nodes,mouseIsPressed,bombActive} = this.state;
     return <div>
         <div className="header">
-          <h1 >Pathfinder Visulizer</h1>
+          <h1 className='header_h1' >Pathfinder Visualizer</h1>
           <div className='header_comp'>
-            <button onClick={() => this.applyDijkstra()}>
+          <div className="dropdown">
+            <button className=" dropdown-toggle dropdown_btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Select Algorithm
+            </button>
+            <ul className="dropdown-menu">
+              <li><a className="dropdown-item" href="#" onClick={() => this.applyDijkstra()}>Dijkstra's</a></li>
+              <li><a className="dropdown-item" href="#" onClick={() => this.applyDfs()}>Dfs</a></li>
+              <li><a className="dropdown-item" href="#" onClick={() => this.applyBfs()}>Bfs</a></li>
+              <li><a className="dropdown-item" href="#" onClick={() => this.applyAstar()}>A Star</a></li>
+            </ul>
+          </div>
+            {/* <button onClick={() => this.applyDijkstra()}>
               Apply Dijkstra
             </button>
+            <button onClick={() => this.applyDfs()}>
+              Apply Dfs
+            </button> */}
             <button onClick={() => this.checkBomb()}>
               Gift
             </button>
@@ -280,6 +386,7 @@ const singleNode = (row, col)=> {
         isWall: false,
         previousNode: null,
         isBomb:false,
+        distanceToFinishNode: Math.abs(FINISH_NODE_ROW - row) + Math.abs(FINISH_NODE_COL - col),
 }}
 
 const getNewGridWithWallToggled = (nodes, row, col) => {

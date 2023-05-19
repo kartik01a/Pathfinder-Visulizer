@@ -1,7 +1,5 @@
 export function dijkstra(grid, startNode, finishNode) {
     const visitedNodesInOrder = [];
-    console.log("Hi");
-    console.log(visitedNodesInOrder);
     startNode.distance = 0;
     const unvisitedNodes = getAllNodes(grid);
     while (!!unvisitedNodes.length) {
